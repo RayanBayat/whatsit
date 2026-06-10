@@ -1,0 +1,30 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Validate manifest and syntax-check JS
+        run: node scripts/check.mjs
+
+      - name: Package store-ready zip
+        run: |
+          VERSION=$(node -p "require('./extension/manifest.json').version")
+          (cd extension && zip -r "../whatsit-v$VERSION.zip" .)
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: whatsit-extension
+          path: whatsit-v*.zip

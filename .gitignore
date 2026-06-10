@@ -1,0 +1,17 @@
+# Session exports from chat tools — contain personal data, never commit
+session-*.md
+
+# Local agent settings
+.claude/
+
+# Packed store zips
+dist/
+
+node_modules/
+
+private/
+
+# OS junk
+Thumbs.db
+desktop.ini
+.DS_Store

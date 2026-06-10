@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#5AA0FF"/>
+      <stop offset="1" stop-color="#1B4DDB"/>
+    </linearGradient>
+    <linearGradient id="q" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2E6BF0"/>
+      <stop offset="1" stop-color="#1B4DDB"/>
+    </linearGradient>
+    <filter id="shadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#0A2A66" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <rect width="128" height="128" rx="30" fill="url(#bg)"/>
+  <!-- top sheen -->
+  <path d="M0 30 C0 13 13 0 30 0 H98 C115 0 128 13 128 30 V42 C88 56 40 56 0 42 Z"
+        fill="#FFFFFF" opacity="0.10"/>
+  <!-- the selected word -->
+  <rect x="26" y="19" width="44" height="13" rx="6.5" fill="#FFFFFF" opacity="0.5"/>
+  <!-- tooltip card, tail pointing up at the selection -->
+  <path filter="url(#shadow)" fill="#FFFFFF"
+        d="M40 44 L48 32 L56 44 H92 C99 44 104 49 104 56 V92
+           C104 99 99 104 92 104 H36 C29 104 24 99 24 92 V56
+           C24 49 29 44 36 44 Z"/>
+  <!-- question mark -->
+  <path d="M52 66 C52 58 57 53 64 53 C71 53 76 58 76 64 C76 70 71 72 67 75 C64.5 77 64 79 64 82"
+        fill="none" stroke="url(#q)" stroke-width="9" stroke-linecap="round"/>
+  <circle cx="64" cy="93" r="6" fill="#1B4DDB"/>
+</svg>
