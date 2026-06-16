@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Whatsit</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #fbfbfc;
+        --surface: #ffffff;
+        --text: #1f2328;
+        --muted: #6b7280;
+        --border: rgba(17, 24, 39, 0.12);
+        --accent: #3b6fb0;
+        --accent-weak: rgba(59, 111, 176, 0.12);
+        --ok: #2f8a52;
+        --ok-weak: rgba(47, 138, 82, 0.14);
+        --err: #c0392b;
+        --hover: rgba(17, 24, 39, 0.05);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #1d1d22;
+          --surface: #26262c;
+          --text: #ececf0;
+          --muted: #9a9aa6;
+          --border: rgba(255, 255, 255, 0.13);
+          --accent: #6ea0e0;
+          --accent-weak: rgba(110, 160, 224, 0.18);
+          --ok: #5fcf86;
+          --ok-weak: rgba(95, 207, 134, 0.16);
+          --err: #ff7a6b;
+          --hover: rgba(255, 255, 255, 0.07);
+        }
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        width: 340px;
+        background: var(--bg);
+        color: var(--text);
+        font: 13px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      .app { padding: 16px; }
+
+      .brand { display: flex; align-items: center; gap: 9px; }
+      .brand .dot {
+        width: 22px; height: 22px; border-radius: 6px; flex: none;
+        background: linear-gradient(135deg, var(--accent), #7b54c4);
+      }
+      .brand-title { font-weight: 700; font-size: 15px; letter-spacing: -0.01em; }
+      .brand-sub { color: var(--muted); font-size: 11px; }
+      .engine {
+        margin: 10px 0 14px;
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 3px 8px; border-radius: 999px;
+        background: var(--accent-weak); color: var(--accent);
+        font-size: 11px; font-weight: 600;
+      }
+
+      .label {
+        font-size: 10.5px; font-weight: 700; letter-spacing: 0.06em;
+        text-transform: uppercase; color: var(--muted); margin-bottom: 7px;
+      }
+      .promptsec { margin-bottom: 16px; }
+      .promptrow { display: flex; gap: 8px; align-items: center; }
+      .select {
+        flex: 1; padding: 7px 9px; border-radius: 8px; border: 1px solid var(--border);
+        background: var(--surface); color: var(--text); font: inherit;
+      }
+      .link2 {
+        flex: none; border: 0; background: none; color: var(--accent);
+        font: inherit; font-weight: 600; cursor: pointer; padding: 6px;
+      }
+      .link2:hover { text-decoration: underline; }
+      .cards { display: grid; gap: 7px; margin-bottom: 16px; }
+      .card {
+        display: flex; align-items: flex-start; gap: 10px;
+        padding: 10px 11px; border: 1px solid var(--border); border-radius: 10px;
+        background: var(--surface); cursor: pointer; transition: border-color .12s, background .12s;
+      }
+      .card:hover { background: var(--hover); }
+      .card.selected { border-color: var(--accent); background: var(--accent-weak); }
+      .card .mark {
+        flex: none; width: 16px; height: 16px; margin-top: 1px; border-radius: 50%;
+        border: 2px solid var(--border); display: grid; place-items: center;
+      }
+      .card.selected .mark { border-color: var(--accent); }
+      .card.selected .mark::after {
+        content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--accent);
+      }
+      .card-title { font-weight: 600; }
+      .card-detail { color: var(--muted); font-size: 11px; margin-top: 1px; }
+
+      .panel {
+        display: flex; align-items: center; gap: 13px;
+        padding: 12px; border: 1px solid var(--border); border-radius: 12px;
+        background: var(--surface); margin-bottom: 12px;
+      }
+      .ring { position: relative; flex: none; width: 54px; height: 54px; }
+      .ring .track { fill: none; stroke: var(--hover); stroke-width: 4; }
+      .ring .bar {
+        fill: none; stroke: var(--accent); stroke-width: 4; stroke-linecap: round;
+        stroke-dasharray: 125.664; stroke-dashoffset: 125.664;
+        transition: stroke-dashoffset .25s ease;
+      }
+      .pct {
+        position: absolute; inset: 0; display: grid; place-items: center;
+        font-size: 11px; font-variant-numeric: tabular-nums; color: var(--muted);
+      }
+      .panel-meta { min-width: 0; }
+      .dl-title { font-weight: 600; overflow-wrap: anywhere; }
+      .pill {
+        display: inline-block; margin-top: 5px; padding: 2px 8px; border-radius: 999px;
+        font-size: 11px; font-weight: 600; background: var(--hover); color: var(--muted);
+      }
+      .pill.ready { background: var(--ok-weak); color: var(--ok); }
+      .pill.busy { background: var(--accent-weak); color: var(--accent); }
+
+      .btn {
+        width: 100%; padding: 9px 12px; border-radius: 10px; border: 1px solid var(--accent);
+        background: var(--accent); color: #fff; font: inherit; font-weight: 600; cursor: pointer;
+      }
+      .btn:hover:not(:disabled) { filter: brightness(1.05); }
+      .btn:disabled { opacity: 0.6; cursor: default; }
+      .msg { margin-top: 9px; font-size: 12px; color: var(--err); }
+      .link {
+        display: block; width: 100%; margin-top: 9px; padding: 4px; border: 0; background: none;
+        color: var(--muted); font: inherit; font-size: 12px; cursor: pointer; text-align: center;
+      }
+      .link:hover { color: var(--err); }
+      .foot {
+        margin-top: 14px; padding-top: 10px; border-top: 1px solid var(--border);
+        color: var(--muted); font-size: 11px; text-align: center;
+      }
+      [hidden] { display: none !important; }
+    </style>
+  </head>
+  <body>
+    <main class="app">
+      <div class="brand">
+        <span class="dot"></span>
+        <div>
+          <div class="brand-title">Whatsit</div>
+          <div class="brand-sub">On-device explanations</div>
+        </div>
+      </div>
+      <span class="engine" id="engine">…</span>
+
+      <section class="promptsec">
+        <div class="label">Prompt</div>
+        <div class="promptrow">
+          <select class="select" id="promptselect" aria-label="Active prompt"></select>
+          <button class="link2" id="manage" type="button">Manage</button>
+        </div>
+      </section>
+
+      <section id="models" hidden>
+        <div class="label">Model</div>
+        <div class="cards" id="cards"></div>
+      </section>
+
+      <div class="panel">
+        <div class="ring">
+          <svg viewBox="0 0 48 48" width="54" height="54" aria-hidden="true">
+            <circle class="track" cx="24" cy="24" r="20"></circle>
+            <circle class="bar" id="bar" cx="24" cy="24" r="20" transform="rotate(-90 24 24)"></circle>
+          </svg>
+          <span class="pct" id="pct">0%</span>
+        </div>
+        <div class="panel-meta">
+          <div class="dl-title" id="dltitle"></div>
+          <span class="pill" id="pill">…</span>
+        </div>
+      </div>
+
+      <button class="btn" id="download">Download</button>
+      <button class="link" id="delete" hidden>Delete downloaded model</button>
+      <p class="msg" id="msg" hidden></p>
+
+      <div class="foot">Runs on your device · nothing is sent anywhere</div>
+    </main>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

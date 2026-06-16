@@ -1,0 +1,260 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Whatsit — Settings</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #f6f7f9; --surface: #ffffff; --surface-2: #fbfbfc;
+        --text: #11181c; --muted: #5b6570; --faint: #8b94a0;
+        --border: rgba(2,6,23,0.10); --hairline: rgba(2,6,23,0.07);
+        --hover: rgba(2,6,23,0.04);
+        --accent: #3b6fb0; --accent-2: #6d5bd0; --accent-weak: rgba(59,111,176,0.10);
+        --track: rgba(2,6,23,0.10);
+        --ok: #2f8a52; --ok-weak: rgba(47,138,82,0.14);
+        --warn: #b7791f; --warn-weak: rgba(183,121,31,0.15);
+        --err: #c0392b; --err-weak: rgba(192,57,43,0.14);
+        --ring: rgba(59,111,176,0.26);
+        --shadow: 0 1px 2px rgba(2,6,23,0.04), 0 8px 24px rgba(2,6,23,0.06);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #161619; --surface: #1f2024; --surface-2: #25262b;
+          --text: #eef0f3; --muted: #9aa1ad; --faint: #767e8a;
+          --border: rgba(255,255,255,0.11); --hairline: rgba(255,255,255,0.07);
+          --hover: rgba(255,255,255,0.06);
+          --accent: #7aa7e6; --accent-2: #a78bfa; --accent-weak: rgba(122,167,230,0.16);
+          --track: rgba(255,255,255,0.12);
+          --ok: #5fcf86; --ok-weak: rgba(95,207,134,0.16);
+          --warn: #e2b95e; --warn-weak: rgba(226,185,94,0.16);
+          --err: #ff8a7a; --err-weak: rgba(255,138,122,0.16);
+          --ring: rgba(122,167,230,0.34);
+          --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 8px 24px rgba(0,0,0,0.4);
+        }
+      }
+      * { box-sizing: border-box; }
+      body {
+        margin: 0; background: var(--bg); color: var(--text);
+        font: 14px/1.6 -apple-system, system-ui, "Segoe UI", Roboto, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      .topbar {
+        position: sticky; top: 0; z-index: 5; backdrop-filter: blur(8px);
+        background: color-mix(in srgb, var(--bg) 82%, transparent);
+        border-bottom: 1px solid var(--hairline);
+      }
+      .topbar-in {
+        max-width: 760px; margin: 0 auto; padding: 13px 24px;
+        display: flex; align-items: center; gap: 11px;
+      }
+      .logo {
+        width: 26px; height: 26px; border-radius: 8px; flex: none;
+        background: linear-gradient(135deg, var(--accent), var(--accent-2));
+        box-shadow: inset 0 0 0 1px rgba(255,255,255,0.2);
+      }
+      .brand { font-weight: 700; font-size: 15px; letter-spacing: -.01em; }
+      .brand small { display: block; font-weight: 500; font-size: 11.5px; color: var(--muted); letter-spacing: 0; }
+      .privacy {
+        margin-left: auto; font-size: 11.5px; font-weight: 600; color: var(--ok);
+        background: var(--ok-weak); padding: 4px 10px; border-radius: 999px;
+      }
+      .page { max-width: 760px; margin: 0 auto; padding: 26px 24px 80px; }
+
+      section { margin-bottom: 30px; }
+      .sec-head { margin-bottom: 12px; }
+      .sec-head h2 { font-size: 15px; margin: 0; letter-spacing: -.01em; }
+      .sec-head p { margin: 3px 0 0; color: var(--muted); font-size: 13px; }
+
+      .card {
+        background: var(--surface); border: 1px solid var(--border);
+        border-radius: 14px; box-shadow: var(--shadow);
+      }
+      .card.pad { padding: 16px; }
+      .card + .card { margin-top: 12px; }
+
+      /* Prompts */
+      .prompt { padding: 14px; }
+      .prompt-head { display: flex; align-items: center; gap: 11px; margin-bottom: 10px; }
+      .radio {
+        appearance: none; -webkit-appearance: none; width: 18px; height: 18px; flex: none;
+        border: 2px solid var(--border); border-radius: 50%; cursor: pointer; position: relative;
+        transition: border-color .12s;
+      }
+      .radio:checked { border-color: var(--accent); }
+      .radio:checked::after {
+        content: ""; position: absolute; inset: 3px; border-radius: 50%; background: var(--accent);
+      }
+      .name {
+        flex: 1; min-width: 0; font-weight: 650; font-size: 14px; padding: 7px 10px;
+        border: 1px solid var(--border); border-radius: 9px; background: var(--surface-2); color: var(--text);
+        outline: none; transition: border-color .12s, box-shadow .12s;
+      }
+      .name:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--ring); }
+      .active-tag {
+        font-size: 10.5px; font-weight: 800; letter-spacing: .05em; color: var(--ok);
+        background: var(--ok-weak); padding: 3px 8px; border-radius: 999px;
+      }
+      textarea {
+        width: 100%; min-height: 70px; resize: vertical; padding: 10px 11px;
+        border: 1px solid var(--border); border-radius: 9px; background: var(--surface-2);
+        color: var(--text); font: inherit; font-size: 13px; line-height: 1.55; outline: none;
+        transition: border-color .12s, box-shadow .12s;
+      }
+      textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--ring); }
+
+      .row { display: flex; gap: 10px; align-items: center; margin-top: 12px; }
+      .grow { flex: 1; }
+      button {
+        font: inherit; font-weight: 600; cursor: pointer; border-radius: 9px;
+        padding: 8px 14px; border: 1px solid var(--border); background: var(--surface); color: var(--text);
+        transition: background .12s, filter .12s, transform .06s;
+      }
+      button:hover { background: var(--hover); }
+      button:active { transform: translateY(1px); }
+      button.primary {
+        background: linear-gradient(135deg, var(--accent), var(--accent-2));
+        border: 0; color: #fff;
+      }
+      button.primary:hover { filter: brightness(1.07); background: linear-gradient(135deg, var(--accent), var(--accent-2)); }
+      button.ghost { border: 0; background: none; color: var(--muted); }
+      button.ghost:hover { background: var(--hover); color: var(--text); }
+      button.danger { border: 0; background: none; color: var(--faint); padding: 7px; }
+      button.danger:hover { background: var(--err-weak); color: var(--err); }
+      .saved { color: var(--ok); font-size: 13px; font-weight: 600; opacity: 0; transition: opacity .2s; }
+      .saved.show { opacity: 1; }
+
+      /* Generation sliders */
+      .ctrl { padding: 15px 16px; }
+      .ctrl + .ctrl { border-top: 1px solid var(--hairline); }
+      .ctrl-head { display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px; }
+      .ctrl-head .t { font-weight: 650; }
+      .ctrl-head .v {
+        margin-left: auto; font-variant-numeric: tabular-nums; font-weight: 700;
+        color: var(--accent); background: var(--accent-weak); padding: 2px 9px; border-radius: 999px; font-size: 12.5px;
+      }
+      .ctrl .desc { color: var(--muted); font-size: 12.5px; margin: 0 0 10px; }
+      input[type="range"] {
+        -webkit-appearance: none; appearance: none; width: 100%; height: 6px;
+        border-radius: 999px; background: var(--track); outline: none; margin: 4px 0;
+      }
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none; width: 18px; height: 18px; border-radius: 50%;
+        background: var(--accent); cursor: pointer; border: 3px solid var(--surface);
+        box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+      }
+      input[type="range"]::-moz-range-thumb {
+        width: 18px; height: 18px; border-radius: 50%; background: var(--accent);
+        cursor: pointer; border: 3px solid var(--surface); box-shadow: 0 1px 4px rgba(0,0,0,0.3);
+      }
+      input[type="range"]:focus { box-shadow: 0 0 0 3px var(--ring); }
+      .ticks { display: flex; justify-content: space-between; color: var(--faint); font-size: 11px; margin-top: 5px; }
+
+      /* Diagnostics */
+      .diag { display: grid; grid-template-columns: 1fr 1fr; gap: 0; }
+      .diag .col { padding: 16px; }
+      .diag .col + .col { border-left: 1px solid var(--hairline); }
+      .diag h3 {
+        font-size: 11px; text-transform: uppercase; letter-spacing: .06em;
+        color: var(--faint); margin: 0 0 12px;
+      }
+      .kv { display: flex; align-items: center; gap: 10px; padding: 5px 0; }
+      .kv .k { color: var(--muted); flex: none; }
+      .kv .val { margin-left: auto; text-align: right; font-weight: 600; overflow-wrap: anywhere; }
+      .badge { padding: 2px 9px; border-radius: 999px; font-size: 12px; font-weight: 700; }
+      .badge.ok { color: var(--ok); background: var(--ok-weak); }
+      .badge.warn { color: var(--warn); background: var(--warn-weak); }
+      .badge.err { color: var(--err); background: var(--err-weak); }
+      .card.pad h3 {
+        font-size: 11px; text-transform: uppercase; letter-spacing: .06em;
+        color: var(--faint); margin: 0 0 10px;
+      }
+      .card-sub { color: var(--muted); font-size: 12.5px; margin: -2px 0 12px; }
+      .mono { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 12px; }
+      @media (max-width: 560px) {
+        .diag { grid-template-columns: 1fr; }
+        .diag .col + .col { border-left: 0; border-top: 1px solid var(--hairline); }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="topbar">
+      <div class="topbar-in">
+        <span class="logo"></span>
+        <span class="brand">Whatsit<small>Settings</small></span>
+        <span class="privacy">On-device · private</span>
+      </div>
+    </div>
+
+    <main class="page">
+      <section>
+        <div class="sec-head">
+          <h2>Prompt library</h2>
+          <p>The active prompt steers how Whatsit explains things. Pick one, edit it, or add your own.</p>
+        </div>
+        <div id="prompts"></div>
+        <div class="row">
+          <button id="add">+ Add prompt</button>
+          <span class="grow"></span>
+          <span id="saved" class="saved">Saved</span>
+          <button id="save" class="primary">Save changes</button>
+        </div>
+      </section>
+
+      <section>
+        <div class="sec-head">
+          <h2>Generation</h2>
+          <p>Tune how the model writes. Changes apply to your next lookup.</p>
+        </div>
+        <div class="card">
+          <div class="ctrl">
+            <div class="ctrl-head"><span class="t">Temperature</span><span class="v" id="temp-val">0.7</span></div>
+            <p class="desc">Lower is more focused and precise; higher is more creative.</p>
+            <input type="range" id="temp" />
+            <div class="ticks"><span>precise</span><span>creative</span></div>
+          </div>
+          <div class="ctrl">
+            <div class="ctrl-head"><span class="t">Top-K</span><span class="v" id="topk-val">3</span></div>
+            <p class="desc">How many candidate tokens the model considers at each step.</p>
+            <input type="range" id="topk" />
+            <div class="ticks"><span>narrow</span><span>wide</span></div>
+          </div>
+          <div class="ctrl">
+            <div class="ctrl-head"><span class="t">Max answer length</span><span class="v" id="maxtok-val">80</span></div>
+            <p class="desc">Cap on tokens generated. <span id="maxtok-note"></span></p>
+            <input type="range" id="maxtok" />
+            <div class="ticks"><span>short</span><span>long</span></div>
+          </div>
+          <div class="ctrl row">
+            <span class="grow"></span>
+            <button id="reset-gen" class="ghost">Reset to defaults</button>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div class="sec-head">
+          <h2>Diagnostics</h2>
+          <p>What's loaded and what this device can do — without digging through internal pages.</p>
+        </div>
+        <div class="card diag">
+          <div class="col">
+            <h3>Engine &amp; model</h3>
+            <div id="engine-kv"></div>
+          </div>
+          <div class="col">
+            <h3>This device</h3>
+            <div id="device-kv"></div>
+          </div>
+        </div>
+
+        <div class="card pad" style="margin-top: 12px">
+          <h3>Model storage</h3>
+          <div id="storage-kv"></div>
+        </div>
+      </section>
+    </main>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>
