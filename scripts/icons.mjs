@@ -1,5 +1,6 @@
-// Render assets/icon.svg to all PNG sizes the manifest and store need.
-// Usage: npm run icons  (requires dev dep: sharp)
+// Render assets/icon.svg to all PNG sizes. Output goes to public/icon/<size>.png,
+// where WXT auto-detects them and wires up manifest `icons` + `action`.
+// Usage: npm run icons  (dev dep: sharp)
 
 import sharp from 'sharp';
 import { mkdirSync } from 'node:fs';
@@ -12,12 +13,12 @@ const SOURCES = {
   48: 'assets/icon.svg',
   128: 'assets/icon.svg',
 };
-mkdirSync('extension/icons', { recursive: true });
+mkdirSync('public/icon', { recursive: true });
 
 for (const [size, src] of Object.entries(SOURCES)) {
   await sharp(src)
     .resize(+size, +size)
     .png()
-    .toFile(`extension/icons/icon${size}.png`);
-  console.log(`icon${size}.png ← ${src}`);
+    .toFile(`public/icon/${size}.png`);
+  console.log(`public/icon/${size}.png ← ${src}`);
 }

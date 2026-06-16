@@ -1,5 +1,33 @@
 {
+  "name": "whatsit",
+  "version": "0.1.0",
+  "description": "Select anything, right-click, get an instant AI explanation in context. On-device — no account, no cloud, free.",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "dev": "wxt",
+    "dev:firefox": "wxt -b firefox",
+    "build": "wxt build && wxt build -b firefox",
+    "build:chrome": "wxt build",
+    "build:firefox": "wxt build -b firefox",
+    "zip": "wxt zip",
+    "zip:firefox": "wxt zip -b firefox",
+    "compile": "wxt prepare && tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "dep:check": "depcruise entrypoints utils types",
+    "dep:graph": "depcruise entrypoints utils types --output-type mermaid --output-to docs/architecture/dependency-graph.mmd",
+    "check": "wxt prepare && tsc --noEmit && vitest run && depcruise entrypoints utils types && wxt build && wxt build -b firefox",
+    "icons": "node scripts/icons.mjs",
+    "postinstall": "wxt prepare"
+  },
   "devDependencies": {
-    "sharp": "^0.35.0"
+    "@webext-core/fake-browser": "^1.5.2",
+    "dependency-cruiser": "^17.4.3",
+    "jsdom": "^29.1.1",
+    "sharp": "^0.35.0",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.9",
+    "wxt": "^0.20.26"
   }
 }

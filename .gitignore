@@ -4,8 +4,10 @@ session-*.md
 # Local agent settings
 .claude/
 
-# Packed store zips
-dist/
+# WXT build output and generated files
+.output/
+.wxt/
+stats.html
 
 node_modules/
 
