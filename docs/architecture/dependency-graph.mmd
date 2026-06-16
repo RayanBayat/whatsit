@@ -1,0 +1,68 @@
+flowchart LR
+
+subgraph 0["entrypoints"]
+1["background.ts"]
+subgraph I["options"]
+J["main.ts"]
+end
+K["overlay.ts"]
+subgraph M["popup"]
+N["main.ts"]
+end
+end
+subgraph 2["utils"]
+subgraph 3["ai"]
+4["index.ts"]
+5["chrome.ts"]
+7["prompt.ts"]
+9["types.ts"]
+A["firefox.ts"]
+C["models.ts"]
+end
+6["prompts.ts"]
+8["settings.ts"]
+B["storage.ts"]
+D["control.ts"]
+E["control-handler.ts"]
+F["conversation.ts"]
+G["messages.ts"]
+H["sanitize.ts"]
+L["page.ts"]
+end
+subgraph O["types"]
+P["ai.d.ts"]
+end
+1-->4
+1-->7
+1-->9
+1-->D
+1-->E
+1-->F
+1-->G
+1-->H
+4-->5
+4-->A
+4-->9
+5-->6
+5-->8
+5-->9
+6-->7
+A-->6
+A-->8
+A-->B
+A-->C
+A-->9
+C-->9
+D-->9
+E-->9
+E-->D
+F-->9
+F-->G
+H-->9
+J-->D
+J-->6
+J-->8
+K-->G
+K-->L
+N-->D
+N-->6

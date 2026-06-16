@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  check:
+  build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -15,16 +15,26 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+          cache: 'npm'
 
-      - name: Validate manifest and syntax-check JS
-        run: node scripts/check.mjs
+      - run: npm ci
 
-      - name: Package store-ready zip
-        run: |
-          VERSION=$(node -p "require('./extension/manifest.json').version")
-          (cd extension && zip -r "../whatsit-v$VERSION.zip" .)
+      - name: Type-check
+        run: npm run compile
+
+      - name: Unit tests
+        run: npm test
+
+      - name: Architecture rules (dependency-cruiser)
+        run: npm run dep:check
+
+      - name: Build + zip (Chrome)
+        run: npm run zip
+
+      - name: Build + zip (Firefox)
+        run: npm run zip:firefox
 
       - uses: actions/upload-artifact@v4
         with:
-          name: whatsit-extension
-          path: whatsit-v*.zip
+          name: whatsit-extensions
+          path: .output/*.zip
