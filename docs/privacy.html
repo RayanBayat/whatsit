@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Whatsit — Privacy Policy</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      max-width: 680px;
+      margin: 60px auto;
+      padding: 0 24px;
+      color: #1a1a1a;
+      line-height: 1.7;
+    }
+    h1 { font-size: 1.6rem; margin-bottom: 4px; }
+    h2 { font-size: 1.1rem; margin-top: 2rem; }
+    p, li { font-size: 0.97rem; }
+    ul { padding-left: 1.4rem; }
+    time { color: #666; font-size: 0.9rem; }
+    hr { border: none; border-top: 1px solid #e0e0e0; margin: 2rem 0; }
+  </style>
+</head>
+<body>
+  <h1>Whatsit Privacy Policy</h1>
+  <time>Last updated: 2026-06-10</time>
+  <hr />
+
+  <p>Whatsit explains text you select on web pages. Here is everything it does with data, in full.</p>
+
+  <h2>What Whatsit processes</h2>
+  <p>When you select text and choose <strong>What's this?</strong>, the extension reads:</p>
+  <ul>
+    <li>the text you selected,</li>
+    <li>up to ~600 characters of surrounding text from the same paragraph,</li>
+    <li>the page title.</li>
+  </ul>
+  <p>This is sent to the AI model <strong>running inside your browser on your own device</strong> to generate the explanation shown in the overlay:</p>
+  <ul>
+    <li><strong>Chrome:</strong> Google's Gemini Nano, via Chrome's built-in Prompt API.</li>
+    <li><strong>Firefox:</strong> the Firefox AI Runtime, via the built-in WebExtensions ML API.</li>
+  </ul>
+  <p>In both cases the text you select is processed locally and is never sent over the network by Whatsit.</p>
+
+  <h2>What Whatsit collects, stores, or transmits</h2>
+  <p><strong>Nothing.</strong></p>
+  <ul>
+    <li>No data ever leaves your device. The extension makes zero network requests.</li>
+    <li>Nothing is stored — no history, no logs, no cookies, no local storage beyond your own settings.</li>
+    <li>There are no accounts, no analytics, no trackers, and no third-party services.</li>
+    <li>The extension only accesses a page when you explicitly invoke it there (<code>activeTab</code>); it has no standing access to any website.</li>
+  </ul>
+  <p>The one-time, first-use model download is performed <strong>by your browser</strong>, not by Whatsit, and contains no information about you or what you read.</p>
+
+  <h2>Changes</h2>
+  <p>If a future version ever changes any of the above, this policy will be updated first and the change will be clearly disclosed in the extension's listing.</p>
+
+  <h2>Contact</h2>
+  <p>Questions: open an issue on the <a href="https://github.com/RayanBayat/whatsit">project repository</a>.</p>
+</body>
+</html>
