@@ -23,8 +23,18 @@ interface OverlayUI {
   addUserTurn(text: string): void;
   setBusy(busy: boolean): void;
   onAsk(handler: (text: string) => void): void;
+  showChips(): void;
   focusInput(): void;
 }
+
+// One-tap follow-ups. Each is just a canned message sent through the same
+// conversation as a typed question — no new APIs, no new permissions.
+const CHIPS: { label: string; prompt: string }[] = [
+  { label: 'Simpler', prompt: 'Explain that even more simply.' },
+  { label: 'Example', prompt: 'Use it in an example sentence.' },
+  { label: 'Synonyms', prompt: 'Give a few synonyms or close alternatives.' },
+  { label: 'More', prompt: 'Tell me a bit more about this.' },
+];
 
 export default defineUnlistedScript(() => {
   const w = window as unknown as { __whatsitLoaded?: boolean };
@@ -54,6 +64,7 @@ function main() {
 
     let turnText = '';
     let gotChunk = false;
+    let chipsShown = false;
 
     port.onMessage.addListener((raw: unknown) => {
       const m = raw as PortMessage;
@@ -66,6 +77,10 @@ function main() {
       } else if (m.type === 'done') {
         ui.finalize(turnText);
         ui.setBusy(false);
+        if (!chipsShown) {
+          ui.showChips(); // reveal one-tap follow-ups after the first answer
+          chipsShown = true;
+        }
         ui.focusInput();
       } else if (m.type === 'error') {
         ui.error(m.message);
@@ -153,6 +168,16 @@ function main() {
       }
     });
 
+    const chipsEl = shadow.querySelector('.chips') as HTMLElement;
+    for (const chip of CHIPS) {
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'chip';
+      button.textContent = chip.label;
+      button.addEventListener('click', () => askHandler?.(chip.prompt));
+      chipsEl.appendChild(button);
+    }
+
     return {
       startAiTurn() {
         const ai = document.createElement('div');
@@ -204,9 +229,15 @@ function main() {
       setBusy(busy) {
         input.disabled = busy;
         sendBtn.disabled = busy;
+        chipsEl.querySelectorAll('button').forEach((b) => {
+          (b as HTMLButtonElement).disabled = busy;
+        });
       },
       onAsk(handler) {
         askHandler = handler;
+      },
+      showChips() {
+        chipsEl.hidden = false;
       },
       focusInput() {
         input.focus();
@@ -340,6 +371,14 @@ function template(width: number, word: string): string {
         animation: blink 1s steps(2) infinite;
       }
       @keyframes blink { 50% { opacity: 0; } }
+      .chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 2px 12px 10px; }
+      .chip {
+        border: 1px solid var(--border); background: var(--accent-weak); color: var(--accent);
+        border-radius: 999px; padding: 5px 11px; font: inherit; font-size: 12px; font-weight: 600;
+        cursor: pointer; transition: filter .12s, background .12s;
+      }
+      .chip:hover:not(:disabled) { background: var(--user-bg); }
+      .chip:disabled { opacity: .5; cursor: default; }
       .composer {
         display: flex; gap: 8px; align-items: center;
         padding: 10px 12px; border-top: 1px solid var(--hairline);
@@ -380,6 +419,7 @@ function template(width: number, word: string): string {
         <button class="close" aria-label="Close">${CLOSE_SVG}</button>
       </div>
       <div class="thread"></div>
+      <div class="chips" hidden></div>
       <div class="composer">
         <input class="ask" type="text" placeholder="Ask a follow-up…" aria-label="Ask a follow-up" />
         <button class="send" aria-label="Send" disabled>${SEND_SVG}</button>
